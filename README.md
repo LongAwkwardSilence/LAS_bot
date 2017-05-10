@@ -1,2 +1,2 @@
 # LAS_bot
-Twitch chat test bot made with Node js
+Test twitch bot using Node.js
