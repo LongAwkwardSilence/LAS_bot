@@ -1,8 +1,10 @@
 //Set-PSReadlineOption -BellStyle None //I'm just gonna leave this here for now. it's to turn of the fucking beeping in powershell (bckspace).
 var tmi = require('tmi.js');
+var fs = require('fs');
+var request = require('request');
 var oauth = require('./NotTodayFucker.js'); 		//imports oauth key from NotTodayFucker.js file for security in github upload (like anyone gives a shit)
-var mode = 'initialised';
-var gmStatus = 'NULL';
+var mode = 'initialised';							//sets specific game mode
+var gmStatus = 'NULL';								//game status
 var messageTracker = [];
 messageTracker.length = 19;
 messageTracker.fill(0);
@@ -10,6 +12,8 @@ var trackerIndex = 0;
 
 var playerQueue = [];
 var playerNum = 0;
+
+var temp = [];
 
 var currGame = [];
 currGame.length = 2;
@@ -41,29 +45,49 @@ client.on("chat", function(channel, userstate, message, self){
 	if (self)
 		return;
 	var msg = message;
+
+		//UNIQUE CHATTER COUNT
+	/*if (temp.indexOf(userstate.username) == -1){
+		temp.push(userstate.username);
+		console.log(temp + "\n" + temp.length);
+		
+		fs.writeFile("./uniquechatters.txt", temp.length.toString(), function(err) {
+    	if(err) {
+        	return console.log(err);
+    	}    	
+		}); 
+	};*/
+		//end unique chatter counter
+	
 	if (msg.indexOf(' ') == -1){
 		msg = msg.concat(' NULL'); //this seems exploitable but...eh
 	};
 	switch (msg.substring(0, msg.indexOf(' '))){
 		case '!hi':
 		console.log('said hi');
+		//sendMessage(longawkwardsilence, "hi");
 		break; 
 
 		case '!XO_mode':
 			if (userstate['user-id'] == '90137836'){
 				mode = 'XO';
 				console.log('XO');
-				sendMessage("longawkwardsilence", "Noughts and Crosses time biiiiiiitttccchhh");
+				//sendMessage("longawkwardsilence", "Noughts and Crosses time biiiiiiitttccchhh");
 			};
 		break;
-
+		case '!uniquechatters':
+			var tempnum = temp.length.toString();
+			sendMessage('longawkwardsilence', tempnum);
+		break;
+		case '!uniquechatterspriv':
+			console.log(temp.length.toString());
+		break;
 		//this is where the XO game logic is
 		case '!JoinSingle':
 			if (mode == 'XO'){  
 			//console.log('single player joined')
 				playerQueue[playerNum] = userstate.username;
 				playerNum++
-				console.log(typeof userstate.username);
 				console.log(playerQueue);
 				console.log(playerNum);
 					if (playerNum == 2){
@@ -109,7 +133,8 @@ client.on("chat", function(channel, userstate, message, self){
 					//START GAMME
 					break;
 
-					case 2
+					case 2:
+					break;
 				};
 
 			};
